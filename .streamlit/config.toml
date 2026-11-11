@@ -1,0 +1,17 @@
+[server]
+# Los reportes de Salesforce pueden pesar decenas de MB
+maxUploadSize = 500
+headless = true
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+primaryColor = "#1F4E79"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F2F6FA"
+textColor = "#1B2430"
+
+[client]
+# Oculta el botón "Deploy" y el menú de desarrollador
+toolbarMode = "viewer"

@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Manual de usuario — Reseguimientos Amgen</title>
+<style>
+  @page { size: A4; margin: 22mm 18mm 20mm 18mm; }
+  :root {
+    --azul: #1F4E79; --azul-claro: #EAF1F8; --gris: #5F6B7A; --borde: #D5DDE6;
+    --alta: #F8CBAD; --media: #FFE699; --baja: #DDEBF7; --ok: #E2F0D9;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "Source Sans Pro", Arial, sans-serif; color: #1B2430;
+         font-size: 10.5pt; line-height: 1.5; margin: 0; }
+  h1, h2, h3, h4 { color: var(--azul); line-height: 1.25; }
+  h1 { font-size: 20pt; margin: 0 0 6mm; padding-bottom: 2mm; border-bottom: 2px solid var(--azul);
+       break-before: page; }
+  h2 { font-size: 13.5pt; margin: 7mm 0 2mm; }
+  h3 { font-size: 11.5pt; margin: 5mm 0 1.5mm; }
+  h2, h3 { break-after: avoid; page-break-after: avoid; }
+  p { margin: 0 0 2.5mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1mm; }
+  code, .campo { font-family: Consolas, "Courier New", monospace; font-size: 9.5pt;
+                 background: #F2F4F7; padding: 0 1mm; border-radius: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt;
+          break-inside: auto; }
+  tr { break-inside: avoid; }
+  th { background: var(--azul); color: #fff; text-align: left; padding: 1.6mm 2mm; font-weight: 600; }
+  td { border-bottom: 1px solid var(--borde); padding: 1.6mm 2mm; vertical-align: top; }
+  tbody tr:nth-child(even) td { background: #F7F9FB; }
+  figure { margin: 3mm 0 5mm; break-inside: avoid; text-align: center; }
+  figure img { max-width: 100%; max-height: 118mm; border: 1px solid var(--borde); border-radius: 4px; }
+  figure.media img { max-width: 62%; }
+  figure.angosta img { max-width: 42%; }
+  figcaption { font-size: 9pt; color: var(--gris); margin-top: 1.5mm; }
+  .caja { border-left: 4px solid var(--azul); background: var(--azul-claro); padding: 2.5mm 4mm;
+          margin: 3mm 0 4mm; break-inside: avoid; border-radius: 0 4px 4px 0; }
+  .caja.aviso { border-color: #C55A11; background: #FBE9DD; }
+  .caja.ok { border-color: #548235; background: var(--ok); }
+  .caja b:first-child { display: block; margin-bottom: 1mm; }
+  .sev { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: 600; font-size: 9pt;
+         white-space: nowrap; }
+  .sev.alta { background: var(--alta); } .sev.media { background: var(--media); } .sev.baja { background: var(--baja); }
+  .paso { display: flex; gap: 3mm; align-items: flex-start; margin: 2mm 0 3mm; break-inside: avoid; }
+  .num { flex: none; width: 7mm; height: 7mm; border-radius: 50%; background: var(--azul); color: #fff;
+         font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 10pt; }
+  .ej { font-family: Consolas, monospace; font-size: 9pt; background: #F2F4F7; border: 1px solid var(--borde);
+        border-radius: 4px; padding: 2.5mm 3mm; white-space: pre-wrap; margin: 2mm 0 4mm; break-inside: avoid; }
+  .nobreak { break-inside: avoid; }
+
+  /* Portada */
+  .portada { height: 245mm; display: flex; flex-direction: column; justify-content: space-between; }
+  .portada .banda { background: var(--azul); color: #fff; padding: 18mm 14mm; border-radius: 6px; margin-top: 30mm; }
+  .portada .banda .pre { font-size: 11pt; letter-spacing: .12em; text-transform: uppercase; opacity: .85; }
+  .portada .banda h1 { color: #fff; border: 0; font-size: 30pt; margin: 4mm 0 3mm; break-before: auto; padding: 0; }
+  .portada .banda .sub { font-size: 13pt; opacity: .95; }
+  .portada .meta { color: var(--gris); font-size: 10pt; border-top: 1px solid var(--borde); padding-top: 4mm; }
+  .portada .meta td { border: 0; padding: .6mm 0; background: none !important; }
+
+  /* Índice */
+  .indice { columns: 1; }
+  .indice ol { list-style: none; padding: 0; }
+  .indice > ol > li { font-weight: 600; margin-top: 2.5mm; }
+  .indice ol ol { font-weight: 400; padding-left: 7mm; margin: 1mm 0 0; }
+  .indice a { color: inherit; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- ═════════════════════════════ PORTADA ═════════════════════════════ -->
+<section class="portada">
+  <div class="banda">
+    <div class="pre">Manual de usuario</div>
+    <h1>Reseguimientos Amgen</h1>
+    <div class="sub">Plataforma de consolidación y validación de la calidad de los seguimientos</div>
+  </div>
+  <div class="meta">
+    <table>
+      <tr><td style="width:35mm"><b>Versión</b></td><td>1.0</td></tr>
+      <tr><td><b>Fecha</b></td><td>Octubre de 2026</td></tr>
+      <tr><td><b>Dirigido a</b></td><td>Coordinadores, auditores y enfermeros(as) que revisan los seguimientos del programa</td></tr>
+      <tr><td><b>Nota</b></td><td>Las pantallas de este manual usan <b>datos ficticios de ejemplo</b>; ningún nombre ni número de caso corresponde a pacientes reales.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═════════════════════════════ ÍNDICE ═════════════════════════════ -->
+<h1 id="indice">Contenido</h1>
+<div class="indice">
+<ol>
+  <li><a href="#s1">1. ¿Qué es la plataforma y para qué sirve?</a></li>
+  <li><a href="#s2">2. Antes de empezar: los archivos que necesita</a>
+    <ol><li>2.1 Los tres reportes</li><li>2.2 Columnas que se usan</li><li>2.3 Cómo debe estar escrita la nota</li></ol></li>
+  <li><a href="#s3">3. Paso a paso</a>
+    <ol><li>3.1 Abrir la plataforma</li><li>3.2 Cargar los archivos</li><li>3.3 Ajustar los parámetros</li><li>3.4 Procesar</li><li>3.5 Descargar el Excel</li></ol></li>
+  <li><a href="#s4">4. Cómo leer los resultados en pantalla</a>
+    <ol><li>4.1 Indicadores</li><li>4.2 Pestaña Resumen</li><li>4.3 Pestaña Hallazgos</li><li>4.4 Pestaña Por persona</li><li>4.5 Pestaña Consolidado</li></ol></li>
+  <li><a href="#s5">5. El archivo Excel descargado</a></li>
+  <li><a href="#s6">6. Qué se calcula: la consolidación</a></li>
+  <li><a href="#s7">7. Qué se calcula: las cuatro validaciones</a>
+    <ol><li>7.1 Severidades</li><li>7.2 Validación 1 — Nota vs Razón del estado</li><li>7.3 Validación 2 — Fecha de llamada vs fecha programada</li>
+        <li>7.4 Validación 3 — Aplicación registrada</li><li>7.5 Validación 4 — Información de cita</li></ol></li>
+  <li><a href="#s8">8. Cómo trabajar los hallazgos (flujo recomendado)</a></li>
+  <li><a href="#s9">9. Preguntas frecuentes y solución de problemas</a></li>
+  <li><a href="#s10">10. Glosario</a></li>
+</ol>
+</div>
+
+<!-- ═════════════════════════════ 1 ═════════════════════════════ -->
+<h1 id="s1">1. ¿Qué es la plataforma y para qué sirve?</h1>
+<p>Reseguimientos Amgen es una página web interna que toma los reportes descargados de Salesforce
+(BD pacientes, Interacciones y Aplicaciones) y hace dos cosas:</p>
+<ol>
+  <li><b>Consolida</b> la información: arma una sola tabla con <b>una fila por paciente</b>, con su último
+      seguimiento, los datos de la nota separados en columnas, su última aplicación y la fecha estimada de la
+      próxima aplicación.</li>
+  <li><b>Valida la calidad de los seguimientos</b>: revisa cada nota y señala los posibles errores
+      (<b>hallazgos</b>) en cuatro frentes:
+    <ul>
+      <li>Coherencia entre la nota registrada y la <b>Razón del estado</b> del paciente.</li>
+      <li>Correspondencia entre la <b>fecha de la llamada</b> y la <b>fecha programada</b> de contacto.</li>
+      <li>Si la nota menciona una <b>aplicación del medicamento</b>, que esté registrada en Aplicaciones.</li>
+      <li>Si el paciente está en <b>gestión de cita</b>, que la información de la cita quede documentada en la nota.</li>
+    </ul>
+  </li>
+</ol>
+<p>El resultado se ve en pantalla (con filtros) y se descarga en un archivo Excel listo para compartir.</p>
+
+<div class="caja">
+  <b>Importante: la plataforma señala, no corrige.</b>
+  Los hallazgos son alertas para revisar. La herramienta lee texto libre escrito por personas, por lo que
+  algunas alertas pueden no ser errores reales. Antes de pedir una corrección, lea siempre la nota completa
+  (columna <span class="campo">DETALLE</span>) del hallazgo.
+</div>
+
+<div class="caja ok">
+  <b>Privacidad</b>
+  Los archivos se procesan en memoria y <b>no se guardan</b> en el servidor. Al cerrar o recargar la página, la
+  información desaparece. El Excel descargado sí contiene datos de pacientes: guárdelo y compártalo solo por
+  los canales autorizados.
+</div>
+
+<!-- ═════════════════════════════ 2 ═════════════════════════════ -->
+<h1 id="s2">2. Antes de empezar: los archivos que necesita</h1>
+
+<h2>2.1 Los tres reportes</h2>
+<table>
+  <thead><tr><th style="width:28%">Archivo</th><th style="width:14%">¿Obligatorio?</th><th>Qué contiene / para qué se usa</th></tr></thead>
+  <tbody>
+    <tr><td><b>1 · BD pacientes</b></td><td>Sí</td><td>Un registro por paciente (caso) con su Estado, Razón del estado, EPS, enfermero(a) de campo, etc. Es la base del consolidado.</td></tr>
+    <tr><td><b>2 · Interacciones</b></td><td>Sí</td><td>Todos los seguimientos (llamadas, visitas) con la fecha de inicio y la nota (<span class="campo">Recomendaciones</span>). Es lo que se valida.</td></tr>
+    <tr><td><b>3 · Aplicaciones</b></td><td>Recomendado</td><td>Registro de las aplicaciones del medicamento. Sin este archivo <b>no se ejecuta la validación 3</b> ni se calcula la próxima aplicación.</td></tr>
+  </tbody>
+</table>
+<p>Formatos aceptados: <b>.xlsx</b>, <b>.xls</b> y <b>.csv</b>. Tamaño máximo: <b>500 MB por archivo</b>.
+Puede subir los reportes tal como se descargan; no hace falta borrar columnas ni cambiar el orden.</p>
+
+<h2>2.2 Columnas que se usan</h2>
+<p>La plataforma busca las columnas por su nombre (sin importar mayúsculas ni tildes). <b>No cambie los
+nombres de las columnas</b> al descargar el reporte. Las marcadas con ★ son indispensables: si faltan, el
+proceso se detiene con un mensaje de error.</p>
+<table>
+  <thead><tr><th style="width:22%">Archivo</th><th>Columnas</th></tr></thead>
+  <tbody>
+    <tr><td>BD pacientes</td><td>★ Número del caso · Zona · Fecha de inscripción · Regimen · EPS · Logistic Operator · Institución · Estado · Razón del estado · Enfermero(a) de campo · Programa</td></tr>
+    <tr><td>Interacciones</td><td>★ Número del caso · ★ Inicio · Recomendaciones · Interacción: Interacciones ID · Interacción: Creado por · Interacción existosa?</td></tr>
+    <tr><td>Aplicaciones</td><td>★ Número del caso · ★ Fecha de aplicación · Frecuencia · ¿Medicamento aplicado?</td></tr>
+  </tbody>
+</table>
+
+<h2>2.3 Cómo debe estar escrita la nota</h2>
+<p>La columna <span class="campo">Recomendaciones</span> de Interacciones es la nota del seguimiento. La plataforma
+la lee línea por línea con el formato <b>CLAVE: VALOR</b>, como en la plantilla del programa:</p>
+<div class="ej">CANAL DE CONTACTO: LLAMADA
+PARTICIPANTE: PACIENTE
+TIPO DE GESTION: SEGUIMIENTO
+ESTADO DESPUES DEL CONTACTO: FALTA CITA MEDICA
+FECHA DE ULTIMA APLICACION: 20/06/2026
+FECHA DE CONTROL CON ESPECIALISTA: 12/08/2026
+FECHA DE PROXIMO CONTACTO: 13/08/2026
+REPORTE FV: NO
+DETALLE: FALTA CITA MEDICA / REUMATOLOGIA / CITA AGENDADA PARA EL 12/08/2026 / TIPO CANAL CALL
+OP LOGISTICO: OPERADOR</div>
+<ul>
+  <li>Cada clave se convierte en una columna del consolidado. Se toleran errores de digitación frecuentes
+      (por ejemplo <i>"CANAL DE CONTACO"</i>, <i>"OP LOGISTIGO"</i>, <i>"ESTADO DESPUES DEL CONTACTO"</i>).</li>
+  <li>Las fechas deben ir como <b>DD/MM/AAAA</b>. La fecha <b>01/01/1999</b> se interpreta como <b>"vacío"</b>
+      (es el relleno que usa la plantilla).</li>
+  <li>El <span class="campo">DETALLE</span> idealmente empieza con el estado del paciente seguido de "/"
+      (<i>"FALTA CITA MEDICA / …"</i>). La plataforma usa ese inicio para saber el estado cuando el campo
+      <span class="campo">ESTADO DESPUES DEL CONTACTO</span> está vacío.</li>
+</ul>
+
+<!-- ═════════════════════════════ 3 ═════════════════════════════ -->
+<h1 id="s3">3. Paso a paso</h1>
+
+<h2>3.1 Abrir la plataforma</h2>
+<p>Abra en el navegador (Chrome o Edge) la dirección que le compartió el administrador, por ejemplo
+<code>http://NOMBRE-DEL-EQUIPO:8501</code>. En el equipo donde está instalada se abre con
+<code>http://localhost:8501</code>.</p>
+<div class="caja aviso">
+  <b>¿La página no carga?</b>
+  La plataforma solo funciona mientras el servidor está encendido. En el equipo que la aloja se enciende
+  con doble clic en <b>ejecutar_web.bat</b>, y la ventana negra que aparece debe permanecer abierta. Si se
+  cierra, la página deja de funcionar.
+</div>
+<figure>
+  <img src="img/01_inicio.png" alt="Pantalla inicial">
+  <figcaption>Figura 1. Pantalla inicial: parámetros a la izquierda; carga de archivos y botón Procesar al centro.</figcaption>
+</figure>
+<p>La pantalla tiene dos zonas:</p>
+<ul>
+  <li><b>Barra lateral izquierda (Parámetros)</b>: define las reglas de la revisión (sección 3.3).</li>
+  <li><b>Zona central</b>: la explicación <i>"¿Qué se valida?"</i> (desplegable), las tres casillas de carga, el botón
+      <b>Procesar</b> y, después de procesar, los resultados.</li>
+</ul>
+
+<h2>3.2 Cargar los archivos</h2>
+<div class="paso"><div class="num">1</div><div>En la casilla <b>1 · BD pacientes</b> haga clic en <b>Upload</b> (o arrastre el archivo) y seleccione el reporte de pacientes.</div></div>
+<div class="paso"><div class="num">2</div><div>En <b>2 · Interacciones</b> cargue el reporte de interacciones.</div></div>
+<div class="paso"><div class="num">3</div><div>En <b>3 · Aplicaciones</b> cargue el reporte de aplicaciones (recomendado).</div></div>
+<figure>
+  <img src="img/04_archivos_cargados.png" alt="Archivos cargados">
+  <figcaption>Figura 2. Los tres archivos cargados. La X a la derecha de cada archivo lo quita para cargar otro.</figcaption>
+</figure>
+<div class="caja">
+  <b>Cada archivo en su casilla</b>
+  Si sube un archivo en la casilla equivocada, el proceso se detiene con el mensaje
+  <i>"No se pudo procesar: No se encontró 'Número del caso'…"</i> o <i>"…'Inicio'…"</i>. Quite el archivo con la X y
+  súbalo en la casilla correcta.
+</div>
+<p>El botón <b>Procesar</b> permanece gris (inactivo) hasta que estén cargados al menos BD pacientes e Interacciones.</p>
+
+<h2>3.3 Ajustar los parámetros</h2>
+<p>Los parámetros <b>no filtran ni borran datos</b>: son las reglas con las que se decide qué es un error. Los
+valores por defecto sirven para el uso diario. Si cambia alguno, <b>debe presionar Procesar de nuevo</b> para que se aplique.</p>
+
+<div style="display:flex; gap:6mm; align-items:flex-start;" class="nobreak">
+<figure class="angosta" style="flex:0 0 38%; margin-top:0">
+  <img src="img/02_parametros.png" alt="Parámetros" style="max-width:100%">
+  <figcaption>Figura 3. Barra de parámetros.</figcaption>
+</figure>
+<div style="flex:1">
+<h3 style="margin-top:0">Seguimientos a validar</h3>
+<ul>
+  <li><b>Último seguimiento de cada paciente</b> (por defecto): revisa solo la nota más reciente de cada caso.
+      Es la única que se compara contra la <i>Razón del estado</i>, porque esta refleja el estado actual del paciente.
+      Úselo para el control del día a día.</li>
+  <li><b>Todos los seguimientos del archivo</b>: revisa todas las notas del periodo descargado. Úselo para auditar
+      el trabajo de un periodo o de una persona. Genera muchos más hallazgos y tarda más. Las notas antiguas no se
+      comparan contra la Razón del estado (que pudo cambiar después).</li>
+</ul>
+<h3>Fecha de corte automática</h3>
+<p>Es la fecha que se toma como "hoy" para decidir si un seguimiento está <b>vencido</b> y si una aplicación
+está <b>vencida</b>.</p>
+<ul>
+  <li><b>Marcada</b> (por defecto): usa la fecha de la <b>última llamada</b> que aparece en Interacciones, es decir,
+      la fecha aproximada en que se descargó el reporte. Así, un reporte descargado hace semanas no marca todo como vencido.</li>
+  <li><b>Desmarcada</b>: aparece un calendario para elegir la fecha (por ejemplo, la fecha de hoy).</li>
+</ul>
+</div>
+</div>
+
+<h3>Tolerancias (días)</h3>
+<table>
+  <thead><tr><th style="width:27%">Parámetro</th><th style="width:9%">Defecto</th><th>Qué controla</th><th style="width:28%">Ejemplo con el valor por defecto</th></tr></thead>
+  <tbody>
+    <tr><td><b>Llamada vs fecha programada</b></td><td>3</td><td>Días de diferencia aceptados entre la <i>fecha de próximo contacto</i> que dejó la nota anterior y la fecha real de la llamada. También es el margen para considerar un seguimiento vencido.</td><td>Programada 10/03. Llamada 12/03: correcto. Llamada 15/03: hallazgo (5 días después).</td></tr>
+    <tr><td><b>Fecha de aplicación nota vs registro</b></td><td>3</td><td>Días de diferencia aceptados entre la fecha de aplicación escrita en la nota y la registrada en Aplicaciones.</td><td>Nota dice 12/03 y Aplicaciones tiene 14/03: correcto. Aplicaciones tiene 20/03: hallazgo.</td></tr>
+    <tr><td><b>Ventana para aplicación sin fecha</b></td><td>35</td><td>Solo cuando la nota dice que se aplicó el medicamento pero no indica la fecha: se busca una aplicación registrada entre la llamada anterior y la actual, máximo estos días hacia atrás.</td><td>Llamada el 30/06 sin fecha en la nota y llamada anterior el 10/06: se busca una aplicación desde el 10/06 (menos la tolerancia) hasta el 30/06.</td></tr>
+  </tbody>
+</table>
+<p><b>Regla práctica:</b> subir una tolerancia hace la revisión más permisiva (menos hallazgos); bajarla la hace más estricta (más hallazgos).</p>
+
+<h3>Gestión de cita</h3>
+<p>Lista de <b>Razones del estado</b> que se consideran "paciente en gestión de cita". Solo a esos pacientes se les
+aplica la validación 4. Por defecto: <i>Falta Cita Médica</i>, <i>Decisión Paciente - Sin Cita</i> y
+<i>Pendiente de Reformulación</i>. Puede agregar otras desde el desplegable (por ejemplo <i>Decisión Médica - Exámenes</i>)
+o quitar una con su X.</p>
+
+<h2>3.4 Procesar</h2>
+<p>Presione <b>Procesar</b>. Una barra muestra el avance: <i>Leyendo BD Pacientes → Leyendo Interacciones →
+Leyendo Aplicaciones → Validando seguimientos → Consolidando → Generando Excel → Listo</i>.</p>
+<div class="caja">
+  <b>¿Cuánto tarda?</b>
+  Con los reportes completos del programa (decenas de miles de pacientes y cientos de miles de aplicaciones) el
+  proceso toma <b>alrededor de 4 minutos</b>; la mayor parte del tiempo se va en leer los Excel. No cierre ni
+  recargue la página mientras la barra avanza.
+</div>
+
+<h2>3.5 Descargar el Excel</h2>
+<p>Al terminar aparece el botón <b>⬇ Descargar Excel</b> arriba a la derecha de los resultados. El archivo se llama
+<code>Reseguimientos_AAAAMMDD.xlsx</code>, con la fecha de corte. Su contenido se explica en la sección 5.</p>
+<div class="caja aviso">
+  <b>Descargue antes de cerrar</b>
+  Si recarga (F5) o cierra la pestaña, los resultados se pierden y debe procesar de nuevo.
+</div>
+
+<!-- ═════════════════════════════ 4 ═════════════════════════════ -->
+<h1 id="s4">4. Cómo leer los resultados en pantalla</h1>
+
+<h2>4.1 Indicadores</h2>
+<figure>
+  <img src="img/05_resultados_metricas.png" alt="Indicadores">
+  <figcaption>Figura 4. Encabezado de resultados con la fecha de corte, el botón de descarga y los indicadores.</figcaption>
+</figure>
+<table>
+  <thead><tr><th style="width:28%">Indicador</th><th>Significado</th></tr></thead>
+  <tbody>
+    <tr><td><b>Fecha de corte</b></td><td>Fecha usada como "hoy" (ver 3.3), con el número de seguimientos leídos y de pacientes en BD.</td></tr>
+    <tr><td><b>Casos validados</b></td><td>Pacientes que tienen al menos un seguimiento en el archivo de Interacciones (los que se pudieron revisar).</td></tr>
+    <tr><td><b>Casos con hallazgos</b></td><td>Cuántos de esos pacientes tienen al menos un hallazgo. El porcentaje debajo es sobre los casos validados.</td></tr>
+    <tr><td><b>Hallazgos</b></td><td>Total de alertas. Un mismo paciente puede tener varias.</td></tr>
+    <tr><td><b>Severidad alta</b></td><td>Hallazgos de severidad Alta: los que conviene revisar primero.</td></tr>
+  </tbody>
+</table>
+
+<h2>4.2 Pestaña Resumen</h2>
+<figure>
+  <img src="img/06_tab_resumen.png" alt="Pestaña Resumen">
+  <figcaption>Figura 5. Resumen por validación, gráfico por severidad y tipos de hallazgo más frecuentes.</figcaption>
+</figure>
+<ul>
+  <li><b>Tabla por validación</b>: casos afectados, número de hallazgos y su reparto por severidad (Alta, Media, Baja).</li>
+  <li><b>Gráfico de barras</b>: lo mismo en forma visual; cada color es una severidad.</li>
+  <li><b>Hallazgos más frecuentes</b>: agrupa los hallazgos por tipo (las fechas y nombres se reemplazan por
+      <i>dd/mm/aaaa</i>, <i>N días</i> o <i>'…'</i>). Sirve para identificar los errores recurrentes y enfocar la capacitación.</li>
+</ul>
+
+<h2>4.3 Pestaña Hallazgos</h2>
+<p>Lista completa de hallazgos, uno por fila, ordenados por severidad.</p>
+<figure>
+  <img src="img/07_tab_hallazgos.png" alt="Pestaña Hallazgos">
+  <figcaption>Figura 6. Filtros y tabla de hallazgos. La columna Severidad se colorea según su nivel.</figcaption>
+</figure>
+<p><b>Filtros</b> (se aplican al instante, sin volver a procesar):</p>
+<table>
+  <thead><tr><th style="width:24%">Filtro</th><th>Uso</th></tr></thead>
+  <tbody>
+    <tr><td><b>Validación</b></td><td>Quite con la X las validaciones que no quiere ver.</td></tr>
+    <tr><td><b>Severidad</b></td><td>Por ejemplo, deje solo <span class="sev alta">Alta</span> para priorizar.</td></tr>
+    <tr><td><b>Registrado por</b></td><td>Elija una o varias personas (quien creó la nota) para ver solo sus hallazgos.</td></tr>
+    <tr><td><b>Buscar caso / texto</b></td><td>Escriba un número de caso (p. ej. <code>PSP-900012</code>) o una palabra; busca en el número de caso, en el texto del hallazgo y en la nota. Presione Enter.</td></tr>
+  </tbody>
+</table>
+<figure>
+  <img src="img/10_hallazgos_filtrados.png" alt="Hallazgos filtrados">
+  <figcaption>Figura 7. Ejemplo: búsqueda de la palabra "cita".</figcaption>
+</figure>
+<p><b>Columnas de la tabla</b>: Número del caso, ID Interacción, Fecha llamada, Creado por (quien escribió la nota),
+Enfermero(a) de campo (asignado en BD pacientes), Validación, Severidad, Hallazgo (la explicación del error),
+Razón del estado y DETALLE (la nota). Puede desplazarse a la derecha para ver las columnas de texto, ampliar
+una columna arrastrando su borde u ordenar haciendo clic en el encabezado.</p>
+<p>Con <b>⬇ Descargar hallazgos filtrados (CSV)</b> obtiene solo las filas que está viendo, por ejemplo para enviarle
+a una persona únicamente sus hallazgos.</p>
+
+<h2>4.4 Pestaña Por persona</h2>
+<figure>
+  <img src="img/08_tab_por_persona.png" alt="Por persona">
+  <figcaption>Figura 8. Hallazgos por persona que registró la nota.</figcaption>
+</figure>
+<p>Tabla con una fila por persona que registró notas (<i>Interacción: Creado por</i>) y el número de hallazgos en
+cada validación, ordenada de mayor a menor total. Sirve para identificar necesidades de retroalimentación o capacitación.</p>
+<div class="caja">
+  <b>Lea el número en contexto</b>
+  Quien registra más seguimientos tiende a tener más hallazgos. Compare la cifra con el volumen de trabajo de
+  cada persona antes de sacar conclusiones.
+</div>
+
+<h2>4.5 Pestaña Consolidado</h2>
+<figure>
+  <img src="img/09_tab_consolidado.png" alt="Consolidado">
+  <figcaption>Figura 9. Consolidado: una fila por paciente.</figcaption>
+</figure>
+<p>Es la misma tabla de la hoja <i>Reseguimientos</i> del Excel: una fila por paciente con su información, su último
+seguimiento, su última aplicación y el resultado de cada validación. La casilla <b>Mostrar solo pacientes con
+hallazgos</b> deja solo los casos con al menos un error. Las columnas se explican en la sección 6.</p>
+
+<!-- ═════════════════════════════ 5 ═════════════════════════════ -->
+<h1 id="s5">5. El archivo Excel descargado</h1>
+<p>El archivo tiene tres hojas. Las hojas de datos tienen <b>filtros</b> en el encabezado y la primera fila y
+columna quedan <b>fijas</b> al desplazarse.</p>
+
+<h2>Hoja "Resumen"</h2>
+<ul>
+  <li>Encabezado con la fecha de corte, los casos validados, los casos con hallazgos y el total de hallazgos.</li>
+  <li>Tabla por validación: casos afectados, hallazgos y reparto Alta / Media / Baja.</li>
+  <li>Tabla <b>"Hallazgos por persona que registró la nota"</b>.</li>
+  <li>Si no se cargó Aplicaciones, aparece en rojo el aviso de que la validación 3 no se ejecutó.</li>
+</ul>
+
+<h2>Hoja "Reseguimientos"</h2>
+<p>Una fila por paciente de BD pacientes (también los que no tienen seguimientos). Las columnas, de izquierda a derecha:</p>
+<table>
+  <thead><tr><th style="width:32%">Grupo de columnas</th><th>Contenido</th></tr></thead>
+  <tbody>
+    <tr><td>Datos del paciente</td><td>Número del caso, Zona, Fecha de inscripción, Regimen, EPS, Logistic Operator, Institución, Estado, Razón del estado, Enfermero(a) de campo, Programa (tal como vienen en BD pacientes).</td></tr>
+    <tr><td>Último seguimiento</td><td><b>Inicio</b> (fecha y hora de la última interacción) y los campos de su nota: CANAL DE CONTACTO, PARTICIPANTE, TIPO DE GESTIÓN, TIPO DE CONTACTO, ESTADO DESPUÉS DE CONTACTO, FECHA DE ÚLTIMA APLICACIÓN, FECHA DE CONTROL CON ESPECIALISTA, FECHA DE PRÓXIMO CONTACTO, REPORTE FV, DETALLE, OP LOGÍSTICO.</td></tr>
+    <tr><td>Aplicaciones</td><td><b>Fecha de Aplicación</b> (última aplicada), <b>Próxima Aplicación</b>, <b>Estado de Aplicación</b> (encabezado amarillo) y <b>Frecuencia</b>.</td></tr>
+    <tr><td>Validaciones (encabezado naranja)</td><td>Una columna por validación (<i>1. Nota vs Razón del estado</i> … <i>4. Información de cita</i>) con <b>OK</b> o el texto de los hallazgos separados por " | ", y dos conteos (ver recuadro abajo). Quedan vacías para los pacientes sin seguimientos.</td></tr>
+  </tbody>
+</table>
+
+<div class="caja">
+  <b>Criterios con error vs N° hallazgos</b>
+  <b>Criterios con error (0 a 4)</b> indica cuántas de las 4 validaciones falló el paciente; nunca pasa de 4.
+  <b>N° hallazgos (errores encontrados)</b> cuenta cada error por separado y <b>puede ser mayor que 4</b>, porque un
+  mismo criterio revisa varias cosas. Ejemplo: un paciente al que se llamó 32 días tarde y que además tiene el
+  próximo contacto vencido suma 2 hallazgos en el criterio 2. En el modo "Todos los seguimientos" este número
+  suma los hallazgos de todas las notas del paciente.
+</div>
+
+<h2>Hoja "Hallazgos"</h2>
+<p>Un registro por hallazgo, con las mismas columnas de la pestaña Hallazgos (sección 4.3). La columna
+<b>Severidad</b> está coloreada: <span class="sev alta">Alta</span> <span class="sev media">Media</span>
+<span class="sev baja">Baja</span>. Use los filtros de Excel para repartir el trabajo por persona o por validación.</p>
+
+<div class="caja">
+  <b>Ejecución sin página web</b>
+  El administrador también puede generar el mismo Excel sin abrir la página, con doble clic en
+  <b>ejecutar.bat</b>. En ese caso los archivos se leen de la carpeta configurada y se usan los parámetros por defecto.
+</div>
+
+<!-- ═════════════════════════════ 6 ═════════════════════════════ -->
+<h1 id="s6">6. Qué se calcula: la consolidación</h1>
+
+<h2>6.1 Último seguimiento por paciente</h2>
+<p>De Interacciones se toma, para cada número de caso, la interacción con la fecha de <b>Inicio</b> más reciente.
+Su nota (<span class="campo">Recomendaciones</span>) se separa en columnas según la clave de cada línea (sección 2.3).
+Si una clave aparece dos veces en la misma nota, se usa la primera.</p>
+
+<h2>6.2 Última aplicación</h2>
+<p>De Aplicaciones se toma, para cada caso, la aplicación con la <b>fecha de aplicación más reciente</b>. Las marcadas como
+<i>¿Medicamento aplicado? = No</i> <b>no cuentan</b>.</p>
+
+<h2>6.3 Próxima Aplicación</h2>
+<p>Se calcula sumando a la última fecha de aplicación el intervalo de su <b>Frecuencia</b>:</p>
+<table style="width:70%">
+  <thead><tr><th>Frecuencia</th><th>Se suma</th></tr></thead>
+  <tbody>
+    <tr><td>Diaria</td><td>1 día</td></tr>
+    <tr><td>Semanal</td><td>7 días</td></tr>
+    <tr><td>Quincenal</td><td>15 días</td></tr>
+    <tr><td>Cada 20 Dias</td><td>20 días</td></tr>
+    <tr><td>Cada 21 Dias / Cada 3 Semanas</td><td>21 días</td></tr>
+    <tr><td>Mensual</td><td>1 mes</td></tr>
+    <tr><td>Cada 3 Meses</td><td>3 meses</td></tr>
+    <tr><td>Semestral</td><td>6 meses</td></tr>
+    <tr><td>Otro, vacía o no reconocida</td><td>Se muestra <b>"Frecuencia Errónea"</b></td></tr>
+  </tbody>
+</table>
+
+<h2>6.4 Estado de Aplicación</h2>
+<table>
+  <thead><tr><th style="width:32%">Valor</th><th>Cuándo aparece</th></tr></thead>
+  <tbody>
+    <tr><td><b>Aplicación Vencida</b></td><td>La Próxima Aplicación es anterior a la fecha de corte.</td></tr>
+    <tr><td><b>En espera de aplicación</b></td><td>La Próxima Aplicación es igual o posterior a la fecha de corte.</td></tr>
+    <tr><td><b>Sin aplicación</b></td><td>El paciente no tiene aplicaciones registradas.</td></tr>
+    <tr><td><b>Revisar</b></td><td>La frecuencia es errónea, por lo que no se puede calcular la próxima aplicación.</td></tr>
+  </tbody>
+</table>
+
+<!-- ═════════════════════════════ 7 ═════════════════════════════ -->
+<h1 id="s7">7. Qué se calcula: las cuatro validaciones</h1>
+<p>Cada validación revisa las notas según el alcance elegido (último seguimiento o todos) y genera un hallazgo por
+cada problema encontrado. Al leer el texto, la plataforma <b>no distingue mayúsculas, minúsculas ni tildes</b>
+(<i>"Aplicación"</i> = <i>"APLICACION"</i>).</p>
+
+<h2>7.1 Severidades</h2>
+<table>
+  <thead><tr><th style="width:18%">Severidad</th><th>Significado</th><th style="width:30%">Qué hacer</th></tr></thead>
+  <tbody>
+    <tr><td><span class="sev alta">Alta</span></td><td>Error claro de registro o de proceso: dato que contradice otra fuente, información obligatoria ausente o seguimiento vencido.</td><td>Revisar y corregir con prioridad.</td></tr>
+    <tr><td><span class="sev media">Media</span></td><td>Inconsistencia probable o información incompleta que conviene completar.</td><td>Revisar; corregir si aplica.</td></tr>
+    <tr><td><span class="sev baja">Baja</span></td><td>Mejora de calidad del registro o punto a verificar; no necesariamente es un error.</td><td>Verificar cuando haya tiempo; útil para capacitación.</td></tr>
+  </tbody>
+</table>
+
+<!-- V1 -->
+<h2>7.2 Validación 1 — Nota vs Razón del estado</h2>
+<p><b>Objetivo:</b> que lo escrito en la nota sea coherente con la <i>Razón del estado</i> registrada para el paciente.</p>
+<p><b>¿Cómo sabe la plataforma qué estado dice la nota?</b> Lee el campo <span class="campo">ESTADO DESPUÉS DE CONTACTO</span>
+y también el inicio del <span class="campo">DETALLE</span> (lo que va antes de la primera "/"). Reconoce las variantes
+habituales: <i>"TRATAMIENTO"</i> = <i>En Tratamiento</i>; <i>"NO CONTACTABLE"</i> = <i>Paciente No Contactable</i>;
+<i>"EN ESPERA DEL MEDICAMENTO"</i> = <i>En Espera del Medicamento O Compra Particular</i>; <i>"INACTIVO - DECISIÓN MÉDICA"</i>
+= <i>Decisión Médica</i>, etc. Un estado general y su versión específica se consideran coherentes (por ejemplo
+<i>Decisión Médica</i> y <i>Decisión Médica - Exámenes</i>).</p>
+<table>
+  <thead><tr><th style="width:36%">Hallazgo</th><th style="width:11%">Severidad</th><th>Cuándo aparece</th></tr></thead>
+  <tbody>
+    <tr><td>Razón del estado 'X' no coincide con el estado de la nota 'Y'</td><td><span class="sev alta">Alta</span></td><td>Solo en el último seguimiento. Ni el campo de estado ni el inicio del detalle coinciden con la Razón del estado del paciente.</td></tr>
+    <tr><td>El seguimiento no tiene nota (Recomendaciones vacías)</td><td><span class="sev alta">Alta</span></td><td>La interacción no tiene ni estado ni detalle.</td></tr>
+    <tr><td>Estado contradictorio en la nota: campo 'X' vs detalle 'Y'</td><td><span class="sev media">Media</span></td><td>El campo ESTADO DESPUÉS DE CONTACTO dice una cosa y el inicio del DETALLE otra.</td></tr>
+    <tr><td>Interacción marcada como exitosa pero la nota indica Paciente No Contactable</td><td><span class="sev media">Media</span></td><td><i>Interacción existosa? = Si</i>, pero el estado de la nota es No Contactable.</td></tr>
+    <tr><td>La nota describe que no hubo contacto pero registra el estado 'X'</td><td><span class="sev media">Media</span></td><td><i>Interacción existosa? = No</i>, el detalle dice que no hubo contacto (no contesta, buzón, apagado, número errado…) y aun así se registra otro estado.</td></tr>
+    <tr><td>La nota no registra un estado reconocible del paciente</td><td><span class="sev media">Media</span></td><td>No se pudo identificar ningún estado ni en el campo ni en el inicio del detalle.</td></tr>
+    <tr><td>El paciente no tiene Razón del estado registrada</td><td><span class="sev media">Media</span></td><td>La Razón del estado está vacía en BD pacientes.</td></tr>
+    <tr><td>La nota registra inactivación con estado 'X'; verificar que la Razón del estado 'Y' sea la correcta</td><td><span class="sev baja">Baja</span></td><td>Igual que el primer caso, pero el paciente está <i>Inactivo</i> y la nota habla de inactivación, desmonte o speech: suele ser un cierre legítimo, solo se pide verificar.</td></tr>
+  </tbody>
+</table>
+<div class="ej">Ejemplo — Razón del estado: Falta Cita Médica
+Nota: ESTADO DESPUES DEL CONTACTO: EN TRATAMIENTO
+      DETALLE: EN TRATAMIENTO / PACIENTE REFIERE QUE CONTINUA CON EL MEDICAMENTO
+→ Alta: "Razón del estado 'Falta Cita Médica' no coincide con el estado de la nota 'EN TRATAMIENTO'"</div>
+
+<!-- V2 -->
+<h2>7.3 Validación 2 — Fecha de la llamada vs fecha programada</h2>
+<p><b>Objetivo:</b> que las llamadas se hagan en la fecha programada y que siempre quede programado el siguiente contacto.</p>
+<p><b>¿Cómo se calcula?</b> Para cada seguimiento se toma la <span class="campo">FECHA DE PRÓXIMO CONTACTO</span> que dejó
+la <b>nota anterior del mismo paciente</b> y se compara con la fecha de <b>Inicio</b> de la llamada actual, con la
+tolerancia configurada. Si hubo varios intentos el mismo día, la comparación se hace solo con el primero.</p>
+<table>
+  <thead><tr><th style="width:36%">Hallazgo</th><th style="width:11%">Severidad</th><th>Cuándo aparece</th></tr></thead>
+  <tbody>
+    <tr><td>Llamada realizada N días DESPUÉS de la fecha programada (dd/mm/aaaa)</td><td><span class="sev alta">Alta</span></td><td>La llamada se hizo más días después de lo programado de lo que permite la tolerancia.</td></tr>
+    <tr><td>Llamada realizada N días ANTES de la fecha programada (dd/mm/aaaa)</td><td><span class="sev media">Media</span></td><td>La llamada se adelantó más de lo que permite la tolerancia. Puede ser válido (por ejemplo, si el paciente llamó); verificar.</td></tr>
+    <tr><td>La nota no registra FECHA DE PRÓXIMO CONTACTO</td><td><span class="sev alta">Alta</span></td><td>El campo está vacío o en 01/01/1999. No se exige si el estado es Fallecimiento, Servicios PSP Finalizados o Tratamiento Finalizado, ni en el último seguimiento de un paciente Inactivo.</td></tr>
+    <tr><td>FECHA DE PRÓXIMO CONTACTO (dd/mm/aaaa) es anterior a la fecha de la llamada</td><td><span class="sev alta">Alta</span></td><td>Se programó el siguiente contacto en una fecha que ya pasó (error de digitación probable).</td></tr>
+    <tr><td>Seguimiento vencido: próximo contacto programado para dd/mm/aaaa y no hay llamada posterior (corte dd/mm/aaaa)</td><td><span class="sev alta">Alta</span></td><td>Solo en el último seguimiento de pacientes no inactivos: el próximo contacto ya pasó (fecha de corte menos la tolerancia) y no existe una llamada más reciente.</td></tr>
+  </tbody>
+</table>
+<div class="ej">Ejemplo — Nota del 01/06: FECHA DE PROXIMO CONTACTO: 15/06/2026
+Siguiente llamada: 06/07/2026 (tolerancia 3 días)
+→ Alta: "Llamada realizada 21 días DESPUÉS de la fecha programada (15/06/2026)"</div>
+
+<!-- V3 -->
+<h2>7.4 Validación 3 — Aplicación mencionada en la nota registrada en Aplicaciones</h2>
+<p><b>Objetivo:</b> que toda aplicación que la nota reporte esté registrada en el módulo de Aplicaciones como aplicada.
+Requiere haber cargado el archivo de Aplicaciones.</p>
+<p>Se revisan dos fuentes dentro de la nota:</p>
+<ol>
+  <li><b>El campo <span class="campo">FECHA DE ÚLTIMA APLICACIÓN</span></b>: si tiene una fecha real (no 01/01/1999), se busca
+      en Aplicaciones una aplicación del mismo caso, marcada como aplicada, dentro de ± la tolerancia. En el modo
+      "Todos los seguimientos" solo se revisa cuando la fecha cambió respecto a la nota anterior, para no repetir
+      el mismo hallazgo en cada nota.</li>
+  <li><b>El texto del <span class="campo">DETALLE</span></b>: si dice que el medicamento <b>ya se aplicó</b>, con frases como
+      <i>"confirma aplicación"</i>, <i>"se aplicó"</i>, <i>"le aplicaron"</i>, <i>"realizó la aplicación"</i> o <i>"aplicación sin novedad"</i>.
+      No cuentan las menciones negadas (<i>"no se ha aplicado"</i>, <i>"pendiente confirmar aplicación"</i>) ni las futuras
+      (<i>"aplicación programada para…"</i>, <i>"próxima aplicación…"</i>, <i>"le realizará la aplicación"</i>). Si junto a la frase hay
+      una fecha (<i>"confirma aplicación el 27 de marzo"</i>, <i>"…del 03/06/2026"</i>), se busca esa fecha. Si no hay fecha, se busca
+      cualquier aplicación entre la llamada anterior y la actual (máximo la "ventana para aplicación sin fecha").</li>
+</ol>
+<table>
+  <thead><tr><th style="width:38%">Hallazgo</th><th style="width:11%">Severidad</th><th>Cuándo aparece</th></tr></thead>
+  <tbody>
+    <tr><td>La aplicación del dd/mm/aaaa indicada en la nota no está registrada en Aplicaciones (última registrada: …)</td><td><span class="sev alta">Alta</span></td><td>La fecha del campo FECHA DE ÚLTIMA APLICACIÓN no aparece en Aplicaciones. Se informa la última aplicación registrada para comparar (a veces es un error de año o de día).</td></tr>
+    <tr><td>La aplicación del dd/mm/aaaa está registrada en Aplicaciones como NO aplicada</td><td><span class="sev alta">Alta</span></td><td>Existe el registro en esa fecha, pero con <i>¿Medicamento aplicado? = No</i>.</td></tr>
+    <tr><td>FECHA DE ÚLTIMA APLICACIÓN (dd/mm/aaaa) es posterior a la fecha de la llamada</td><td><span class="sev alta">Alta</span></td><td>Se escribió una fecha futura como última aplicación (probablemente se puso la próxima).</td></tr>
+    <tr><td>La nota confirma aplicación del dd/mm/aaaa pero no está registrada en Aplicaciones</td><td><span class="sev alta">Alta</span></td><td>El detalle confirma una aplicación con fecha y esa aplicación no está registrada.</td></tr>
+    <tr><td>La nota confirma una aplicación pero no hay aplicación registrada entre dd/mm y dd/mm</td><td><span class="sev alta">Alta</span></td><td>El detalle confirma una aplicación sin fecha y no hay ninguna aplicación registrada en el periodo.</td></tr>
+    <tr><td>La nota confirma aplicación pero no diligencia FECHA DE ÚLTIMA APLICACIÓN</td><td><span class="sev baja">Baja</span></td><td>La aplicación sí está registrada, pero el campo de fecha de la nota quedó vacío.</td></tr>
+  </tbody>
+</table>
+<div class="ej">Ejemplo — DETALLE: EN TRATAMIENTO / FAMILIAR CONFIRMA APLICACION EL 2 DE JULIO
+Aplicaciones del caso: ninguna entre el 29/06 y el 05/07
+→ Alta: "La nota confirma aplicación del 02/07/2026 pero no está registrada en Aplicaciones"</div>
+
+<!-- V4 -->
+<h2>7.5 Validación 4 — Paciente en gestión de cita</h2>
+<p><b>Objetivo:</b> cuando el paciente está esperando una cita médica, la nota debe dejar claro <b>con quién</b> es la cita
+y <b>en qué va</b>: la fecha si ya está agendada, o el motivo si aún no lo está.</p>
+<p><b>¿A quién se aplica?</b> A los pacientes cuya Razón del estado (en el último seguimiento) o cuyo estado en la nota
+está en la lista <i>Gestión de cita</i> de los parámetros.</p>
+<p><b>¿Qué busca en el DETALLE?</b></p>
+<ul>
+  <li><b>Especialidad o médico</b>: reumatología, endocrinología, internista o medicina interna, ortopedia, hematología,
+      oncología, cardiología, nefrología, neurología, dermatología, gastroenterología, ginecología, fisiatría, geriatría,
+      oftalmología, neumología, médico general / tratante / especialista / familiar, "Dr." / "Dra.", entre otros.</li>
+  <li><b>Cita agendada</b>: <i>"cita agendada / asignada / programada"</i>, <i>"tiene cita"</i>, <i>"cuenta con cita"</i>, <i>"le dieron cita"</i>…
+      (sin negación delante: <i>"aún no cuenta con cita"</i> no cuenta como agendada).</li>
+  <li><b>Fecha de la cita</b>: una fecha en el detalle (<i>12/08/2026</i>, <i>18 de agosto</i>), una fecha relativa (<i>hoy</i>,
+      <i>mañana</i>, <i>el 29</i>) o una fecha válida en <span class="campo">FECHA DE CONTROL CON ESPECIALISTA</span>.</li>
+  <li><b>Motivo de no tenerla</b>: <i>sin agenda</i>, <i>no hay agenda</i>, <i>no ha solicitado</i>, <i>en trámite</i>, <i>en espera de
+      autorización</i>, <i>lista de espera</i>, <i>órdenes vencidas</i>, <i>tutela</i>, <i>cambio de EPS</i>, etc.</li>
+</ul>
+<table>
+  <thead><tr><th style="width:38%">Hallazgo</th><th style="width:11%">Severidad</th><th>Cuándo aparece</th></tr></thead>
+  <tbody>
+    <tr><td>La nota indica cita agendada pero no registra la fecha</td><td><span class="sev alta">Alta</span></td><td>Dice que la cita está agendada pero no hay ninguna fecha ni mes.</td></tr>
+    <tr><td>No documenta el estado de la cita (fecha si está agendada, o motivo si no lo está)</td><td><span class="sev alta">Alta</span></td><td>No se encuentra ni fecha, ni "agendada", ni motivo de por qué no hay cita.</td></tr>
+    <tr><td>La nota no indica la especialidad o médico de la cita</td><td><span class="sev media">Media</span></td><td>No aparece ninguna especialidad ni médico.</td></tr>
+    <tr><td>La nota deja el texto de plantilla 'ESPECIALIDAD' sin diligenciar</td><td><span class="sev media">Media</span></td><td>La nota contiene literalmente <i>"/ESPECIALIDAD/"</i> en lugar del nombre de la especialidad.</td></tr>
+    <tr><td>Cita agendada sin fecha exacta (solo indica el mes)</td><td><span class="sev baja">Baja</span></td><td>Por ejemplo <i>"tiene cita para agosto"</i>.</td></tr>
+    <tr><td>La fecha de la cita está en el detalle pero no en FECHA DE CONTROL CON ESPECIALISTA</td><td><span class="sev baja">Baja</span></td><td>La fecha se escribió en el texto, pero el campo estructurado quedó vacío.</td></tr>
+    <tr><td>FECHA DE CONTROL CON ESPECIALISTA (dd/mm/aaaa) ya pasó; validar resultado de la cita</td><td><span class="sev baja">Baja</span></td><td>La cita registrada es anterior a la llamada: conviene preguntar y registrar qué pasó en la cita.</td></tr>
+  </tbody>
+</table>
+<div class="ej" style="break-before: avoid">Correcto:   FALTA CITA MEDICA / REUMATOLOGIA / CITA AGENDADA PARA EL 12/08/2026
+Incompleto: FALTA CITA MEDICA / PACIENTE INFORMA QUE TIENE CITA AGENDADA
+            → Media: no indica la especialidad · Alta: cita agendada sin fecha</div>
+
+<!-- ═════════════════════════════ 8 ═════════════════════════════ -->
+<h1 id="s8">8. Cómo trabajar los hallazgos (flujo recomendado)</h1>
+<div class="paso"><div class="num">1</div><div><b>Procese</b> con los reportes del día o de la semana, con los parámetros por defecto.</div></div>
+<div class="paso"><div class="num">2</div><div>En <b>Resumen</b>, revise qué validación concentra más hallazgos y cuáles son los tipos más frecuentes.</div></div>
+<div class="paso"><div class="num">3</div><div>En <b>Hallazgos</b>, filtre por severidad <span class="sev alta">Alta</span> y revise primero los seguimientos vencidos y las aplicaciones no registradas: son los que afectan directamente al paciente.</div></div>
+<div class="paso"><div class="num">4</div><div>Para cada hallazgo, <b>lea el DETALLE</b> y confirme si es un error real. Si lo es, corríjalo en Salesforce o solicite la corrección a quien registró la nota.</div></div>
+<div class="paso"><div class="num">5</div><div>Filtre por <b>Registrado por</b> y descargue el CSV para enviarle a cada persona sus hallazgos.</div></div>
+<div class="paso"><div class="num">6</div><div>Use <b>Por persona</b> y los tipos más frecuentes para planear la retroalimentación o la capacitación.</div></div>
+<div class="paso"><div class="num">7</div><div><b>Descargue el Excel</b> si necesita dejar evidencia o compartir el consolidado.</div></div>
+<div class="caja">
+  <b>Ajuste fino</b>
+  Si un tipo de hallazgo aparece muchas veces y para el equipo no es un error (por ejemplo, llamadas 4 o 5 días
+  antes de lo programado), ajuste la tolerancia correspondiente y procese de nuevo, en lugar de ignorar la lista completa.
+</div>
+
+<!-- ═════════════════════════════ 9 ═════════════════════════════ -->
+<h1 id="s9">9. Preguntas frecuentes y solución de problemas</h1>
+<table>
+  <thead><tr><th style="width:36%">Situación</th><th>Causa y solución</th></tr></thead>
+  <tbody>
+    <tr><td>La página no carga / "No se puede acceder a este sitio"</td><td>El servidor está apagado. En el equipo que la aloja, ejecute <b>ejecutar_web.bat</b> y deje la ventana abierta. Desde otro equipo, verifique que usa la dirección correcta (<code>http://NOMBRE-DEL-EQUIPO:8501</code>).</td></tr>
+    <tr><td>El botón Procesar está gris</td><td>Falta cargar BD pacientes o Interacciones.</td></tr>
+    <tr><td>"No se pudo procesar: No se encontró 'Número del caso' / 'Inicio' / 'Fecha de aplicación'…"</td><td>El archivo está en la casilla equivocada o la columna fue renombrada o eliminada. Verifique la sección 2.2.</td></tr>
+    <tr><td>Cambié un parámetro y los resultados no cambiaron</td><td>Los parámetros se aplican al presionar <b>Procesar</b> nuevamente.</td></tr>
+    <tr><td>Recargué la página y desaparecieron los resultados</td><td>Es normal: la información no se guarda. Procese de nuevo y descargue el Excel antes de cerrar.</td></tr>
+    <tr><td>No aparece la validación 3 / aviso "No se cargó Aplicaciones"</td><td>No se subió el archivo de Aplicaciones.</td></tr>
+    <tr><td>Muchos pacientes aparecen como "Seguimiento vencido" o "Aplicación Vencida"</td><td>Revise la <b>fecha de corte</b>. Si la desmarcó y eligió la fecha de hoy, pero el reporte es de hace semanas, casi todo aparecerá vencido. Use la fecha de corte automática.</td></tr>
+    <tr><td>Muchos hallazgos "Llamada realizada N días ANTES…"</td><td>Si adelantar llamadas es aceptado por el equipo, aumente la tolerancia "Llamada vs fecha programada".</td></tr>
+    <tr><td>"Frecuencia Errónea" / Estado de Aplicación "Revisar"</td><td>La frecuencia de la aplicación es "Otro", está vacía o no es una de las de la tabla 6.3. Corrija la frecuencia en Salesforce.</td></tr>
+    <tr><td>Un hallazgo no es un error real</td><td>Puede ocurrir porque las reglas leen texto libre. Si un mismo caso falso se repite, repórtelo al administrador con el número de caso y la nota para ajustar la regla.</td></tr>
+    <tr><td>El proceso tarda mucho</td><td>Con los reportes completos es normal que tome unos minutos. El modo "Todos los seguimientos" tarda más. No recargue la página mientras avanza.</td></tr>
+    <tr><td>Un paciente aparece en el consolidado sin datos de seguimiento</td><td>No tiene interacciones en el archivo de Interacciones cargado (por ejemplo, porque el reporte cubre otro periodo). Esos pacientes no se validan.</td></tr>
+  </tbody>
+</table>
+
+<!-- ═════════════════════════════ 10 ═════════════════════════════ -->
+<h1 id="s10">10. Glosario</h1>
+<table>
+  <thead><tr><th style="width:30%">Término</th><th>Definición</th></tr></thead>
+  <tbody>
+    <tr><td><b>Caso</b></td><td>Paciente inscrito en un programa, identificado por el <i>Número del caso</i> (PSP-…).</td></tr>
+    <tr><td><b>Seguimiento / Interacción</b></td><td>Cada contacto registrado con el paciente (llamada, visita, mensaje) en el reporte de Interacciones.</td></tr>
+    <tr><td><b>Nota</b></td><td>El texto del seguimiento (columna <i>Recomendaciones</i>), con sus campos CLAVE: VALOR.</td></tr>
+    <tr><td><b>DETALLE</b></td><td>Campo de texto libre de la nota donde se describe lo conversado.</td></tr>
+    <tr><td><b>Estado / Razón del estado</b></td><td>En BD pacientes, el <i>Estado</i> es Activo, Inactivo o Suspendido; la <i>Razón del estado</i> es la situación específica (En Tratamiento, Falta Cita Médica…).</td></tr>
+    <tr><td><b>Próximo contacto</b></td><td>Fecha en que se programó la siguiente llamada (campo FECHA DE PRÓXIMO CONTACTO).</td></tr>
+    <tr><td><b>Fecha de corte</b></td><td>Fecha que se toma como "hoy" para calcular vencimientos.</td></tr>
+    <tr><td><b>Tolerancia</b></td><td>Margen de días que no se considera error al comparar dos fechas.</td></tr>
+    <tr><td><b>Hallazgo</b></td><td>Posible error detectado en un seguimiento. Tiene validación, severidad y explicación.</td></tr>
+    <tr><td><b>Severidad</b></td><td>Prioridad del hallazgo: Alta, Media o Baja (sección 7.1).</td></tr>
+    <tr><td><b>Consolidado</b></td><td>Tabla con una fila por paciente que junta pacientes, último seguimiento, aplicaciones y resultado de las validaciones.</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>
