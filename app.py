@@ -26,7 +26,7 @@ st.markdown("""
 <style>
   .block-container { padding-top: 2rem; }
   div[data-testid="stMetricValue"] { font-size: 1.8rem; }
-  .nota { color: #5f6b7a; font-size: .9rem; }
+  .nota { color: #9aa7b8; font-size: .9rem; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -225,7 +225,7 @@ with tab_hall:
 
         st.caption(f"{len(vista):,} hallazgos".replace(",", "."))
         st.dataframe(
-            vista.style.map(lambda s: f"background-color: {COLOR_SEVERIDAD.get(s, '')}",
+            vista.style.map(lambda s: f"background-color: {COLOR_SEVERIDAD.get(s, '')}; color: #1B2430",
                             subset=["Severidad"]) if len(vista) <= 20000 else vista,
             hide_index=True, width="stretch", height=520,
             column_config={

@@ -43,3 +43,11 @@ de la empresa, nunca en un servicio público (p. ej. Streamlit Community Cloud).
   `http://NOMBRE-DEL-EQUIPO:8501` (puede requerir abrir el puerto 8501 en el firewall de Windows).
 - **Servidor**: instalar requirements y ejecutar `streamlit run app.py --server.address 0.0.0.0`
   detrás del proxy/autenticación corporativa.
+- **Vercel**: la página se publica como sitio estático. [web/index.html](web/index.html) carga
+  `app.py` con [stlite](https://github.com/whitphx/stlite) (Streamlit corriendo en el navegador
+  con Pyodide), así que el procesamiento ocurre en el equipo de quien la usa y los archivos no
+  se envían a Vercel. [vercel.json](vercel.json) copia a `dist/` solo lo necesario. Al importar en
+  Vercel elegir el preset **Other** y dejar Root Directory en `./`.
+  La primera carga tarda unos segundos mientras descarga Python en el navegador.
+  Para probarla local: copiar los archivos como en el `buildCommand` de `vercel.json` y ejecutar
+  `npm run web` → http://localhost:8000.

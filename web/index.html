@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reseguimientos Amgen</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🩺</text></svg>" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.0/build/stlite.css" />
+    <style>
+      html, body { margin: 0; background: #0E1117; color: #E6EAF0; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module">
+      // La app de Streamlit (app.py) corre completa dentro del navegador con stlite (Pyodide).
+      // Los archivos que sube el usuario no salen de su equipo.
+      import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.0/build/stlite.js";
+
+      mount(
+        {
+          requirements: ["pandas", "numpy", "openpyxl"],
+          entrypoint: "app.py",
+          files: {
+            "app.py": { url: "./app.py" },
+            "scripts/consolidar_data.py": { url: "./scripts/consolidar_data.py" },
+            "scripts/validaciones.py": { url: "./scripts/validaciones.py" },
+            "Manual_de_usuario_Reseguimientos.pdf": { url: "./Manual_de_usuario_Reseguimientos.pdf" },
+          },
+          // Mismo tema que .streamlit/config.toml
+          streamlitConfig: {
+            "theme.base": "dark",
+            "theme.primaryColor": "#4A9EE0",
+            "theme.backgroundColor": "#0E1117",
+            "theme.secondaryBackgroundColor": "#1A2230",
+            "theme.textColor": "#E6EAF0",
+            "client.toolbarMode": "viewer",
+            "browser.gatherUsageStats": false,
+          },
+        },
+        document.getElementById("root"),
+      );
+    </script>
+  </body>
+</html>

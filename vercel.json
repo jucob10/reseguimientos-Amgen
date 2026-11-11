@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "echo sin dependencias",
+  "buildCommand": "rm -rf dist && mkdir -p dist/scripts && cp web/index.html app.py Manual_de_usuario_Reseguimientos.pdf dist/ && cp scripts/consolidar_data.py scripts/validaciones.py dist/scripts/",
+  "outputDirectory": "dist"
+}
