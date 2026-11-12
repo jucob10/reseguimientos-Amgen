@@ -19,7 +19,8 @@
 
       mount(
         {
-          requirements: ["pandas", "numpy", "openpyxl"],
+          // python-calamine: lectura de Excel varias veces más rápida que openpyxl
+          requirements: ["pandas", "numpy", "openpyxl", "python-calamine"],
           entrypoint: "app.py",
           files: {
             "app.py": { url: "./app.py" },

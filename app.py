@@ -123,15 +123,38 @@ with c3:
                              help="Opcional, pero sin este archivo no se ejecuta la validación 3 "
                                   "ni el cálculo de próxima aplicación.")
 
+def refrescar_pantalla():
+    """
+    En la versión web (stlite, Python dentro del navegador) la pantalla no se
+    actualiza mientras Python está ocupado. Esta pausa corta le cede el control
+    al navegador para que se vea la barra de avance. Localmente no hace nada.
+    """
+    if sys.platform != "emscripten":
+        return
+    try:
+        import asyncio
+        from pyodide.ffi import can_run_sync, run_sync
+        if can_run_sync():
+            run_sync(asyncio.sleep(0.1))
+    except Exception:  # noqa: BLE001 — si no se puede, solo no se ve el avance
+        pass
+
+
+def avance(barra, fraccion, mensaje):
+    barra.progress(fraccion, text=mensaje)
+    refrescar_pantalla()
+
+
 listo = f_pac is not None and f_int is not None
 if st.button("Procesar", type="primary", disabled=not listo, width="stretch"):
     barra = st.progress(0.0, text="Iniciando...")
+    refrescar_pantalla()
     try:
         reporte = cd.generar_reporte(
             f_pac, f_int, f_apl, params,
-            progreso=lambda f, m: barra.progress(min(f * 0.8, 0.8), text=m),
+            progreso=lambda f, m: avance(barra, min(f * 0.8, 0.8), m),
         )
-        barra.progress(0.85, text="Generando Excel...")
+        avance(barra, 0.85, "Generando Excel...")
         reporte["excel"] = cd.exportar_excel(reporte)
         barra.progress(1.0, text="Listo")
         st.session_state["reporte"] = reporte
