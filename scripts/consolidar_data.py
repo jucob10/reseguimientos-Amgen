@@ -28,13 +28,18 @@ import io
 import re
 import difflib
 import unicodedata
+import warnings
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from datetime import datetime
-from openpyxl.styles import PatternFill, Font, Alignment
+from datetime import date, datetime
+from openpyxl import Workbook
+from openpyxl.cell import WriteOnlyCell
+from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.table import Table, TableStyleInfo
+from openpyxl.worksheet.dimensions import RowDimension
+from openpyxl.worksheet.filters import AutoFilter
+from openpyxl.worksheet.table import Table, TableColumn, TableStyleInfo
 
 import validaciones as val
 
@@ -659,38 +664,14 @@ def tabla_resumen(df_h: pd.DataFrame) -> pd.DataFrame:
 # ─────────────────────────────────────────────────────────────────────────────
 #  FORMATO EXCEL
 # ─────────────────────────────────────────────────────────────────────────────
-def format_excel(ws, header_hex="1F4E79", font_hex="FFFFFF", nombre_tabla=None):
-    """
-    Formato de la hoja: encabezado de color, tabla con filas alternas y
-    filtros (un objeto Table de Excel; mucho más rápido que pintar celda a celda).
-    """
-    header_fill = PatternFill("solid", fgColor=header_hex)
-    header_font = Font(bold=True, color=font_hex, size=11, name="Calibri")
-
-    if ws.max_row > 1 and nombre_tabla:
-        tabla = Table(displayName=nombre_tabla, ref=ws.dimensions)
-        tabla.tableStyleInfo = TableStyleInfo(name="TableStyleLight9", showRowStripes=True)
-        ws.add_table(tabla)
-
-    for cell in ws[1]:
-        cell.fill      = header_fill
-        cell.font      = header_font
-        cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
-    ws.row_dimensions[1].height = 32
-
-    # Ancho automático (máx 45) con una muestra de filas
-    for col in ws.iter_cols(min_row=1, max_row=min(ws.max_row, 500)):
-        max_len = max((len(str(c.value or "")) for c in col), default=10)
-        ws.column_dimensions[get_column_letter(col[0].column)].width = min(max(max_len + 4, 10), 45)
-
-    ws.freeze_panes = "B2"
-
-
-def _colorear_encabezados(ws, columnas: dict[str, str]):
-    for cell in ws[1]:
-        if cell.value in columnas:
-            cell.fill = PatternFill("solid", fgColor=columnas[cell.value])
-            cell.font = Font(bold=True, color="000000", size=11, name="Calibri")
+# El libro se escribe en modo "solo escritura" de openpyxl: las filas se van
+# guardando a medida que se escriben. Con archivos grandes el modo normal llega
+# a más de 3 GB de memoria y la versión web (Python dentro del navegador) se
+# queda sin memoria.
+_BORDE_FINO = Border(left=Side(style="thin"), right=Side(style="thin"),
+                     top=Side(style="thin"), bottom=Side(style="thin"))
+_FORMATO_FECHA_HORA = "YYYY-MM-DD HH:MM:SS"
+_FORMATO_FECHA = "YYYY-MM-DD"
 
 
 def hallazgos_por_persona(df_h: pd.DataFrame) -> pd.DataFrame:
@@ -714,15 +695,18 @@ def exportar_excel(reporte: dict, destino=None) -> bytes | None:
     por_persona = hallazgos_por_persona(reporte["hallazgos"])
     fila_persona = len(reporte["resumen"]) + 8
 
-    buffer = io.BytesIO()
-    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-        reporte["resumen"].to_excel(writer, sheet_name="Resumen", index=False, startrow=4)
-        if not por_persona.empty:
-            por_persona.to_excel(writer, sheet_name="Resumen", index=False, startrow=fila_persona)
-        reporte["consolidado"].to_excel(writer, sheet_name="Reseguimientos", index=False)
-        df_h.to_excel(writer, sheet_name="Hallazgos", index=False)
-        _dar_formato(writer.book, reporte, por_persona, fila_persona)
+    wb = Workbook(write_only=True)
+    _hoja_resumen(wb, reporte, por_persona, fila_persona)
+    _hoja_tabla(wb, reporte["consolidado"], "Reseguimientos", "1F4E79",
+                colores_encabezado={COL_ESTADO_APLICACION: "FFD966",
+                                    **{v: "F4B183" for v in val.VALIDACIONES},
+                                    val.COL_N_CRITERIOS: "F4B183", val.COL_N_HALLAZGOS: "F4B183"})
+    _hoja_tabla(wb, df_h, "Hallazgos", "833C0B",
+                colores_celda={"Severidad": {val.ALTA: "F8CBAD", val.MEDIA: "FFE699", val.BAJA: "DDEBF7"}},
+                anchos={"Hallazgo": 70, "DETALLE": 70})
 
+    buffer = io.BytesIO()
+    wb.save(buffer)
     datos = buffer.getvalue()
     if destino is None:
         return datos
@@ -730,49 +714,129 @@ def exportar_excel(reporte: dict, destino=None) -> bytes | None:
     return None
 
 
-def _dar_formato(wb, reporte: dict, por_persona: pd.DataFrame, fila_persona: int):
-    """Formato de las tres hojas (se aplica antes de guardar el libro)."""
-    ws = wb["Resumen"]
-    t = reporte["totales"]
-    ws["A1"] = "RESEGUIMIENTOS AMGEN — Validación de seguimientos"
-    ws["A1"].font = Font(bold=True, size=14, color="1F4E79")
-    ws["A2"] = (f"Fecha de corte: {reporte['fecha_corte']:%d/%m/%Y}   |   "
-                f"Casos validados: {t['casos_validados']}   |   "
-                f"Casos con hallazgos: {t['casos_con_hallazgos']}   |   Hallazgos: {t['hallazgos']}")
-    if not t["con_aplicaciones"]:
-        ws["A3"] = "No se cargó el archivo de Aplicaciones: la validación 3 no se ejecutó."
-        ws["A3"].font = Font(italic=True, color="C00000")
-    titulo_fill = PatternFill("solid", fgColor="1F4E79")
-    filas_titulo = [5] + ([fila_persona + 1] if not por_persona.empty else [])
-    for fila in filas_titulo:
-        for cell in ws[fila]:
-            if cell.value is not None:
-                cell.fill = titulo_fill
-                cell.font = Font(bold=True, color="FFFFFF")
-    if not por_persona.empty:
-        ws.cell(row=fila_persona, column=1, value="Hallazgos por persona que registró la nota").font = Font(bold=True)
+def _celda(ws, valor, fill=None, font=None, alignment=None, border=None, number_format=None):
+    c = WriteOnlyCell(ws, value=valor)
+    if fill is not None:
+        c.fill = fill
+    if font is not None:
+        c.font = font
+    if alignment is not None:
+        c.alignment = alignment
+    if border is not None:
+        c.border = border
+    if number_format is not None:
+        c.number_format = number_format
+    return c
+
+
+def _valores(df: pd.DataFrame, bloque: int = 5000):
+    """Filas del DataFrame como listas de valores de Python (vacíos → None), por bloques."""
+    for ini in range(0, len(df), bloque):
+        parte = df.iloc[ini:ini + bloque].astype(object)
+        parte = parte.where(parte.notna(), None)
+        for fila in parte.itertuples(index=False, name=None):
+            yield list(fila)
+
+
+def _formato_fecha(v):
+    if isinstance(v, datetime):
+        return _FORMATO_FECHA_HORA
+    if isinstance(v, date):
+        return _FORMATO_FECHA
+    return None
+
+
+def _hoja_resumen(wb, reporte: dict, por_persona: pd.DataFrame, fila_persona: int):
+    ws = wb.create_sheet("Resumen")
     ws.column_dimensions["A"].width = 38
     for letra in "BCDEFGH":
         ws.column_dimensions[letra].width = 18
 
-    ws = wb["Reseguimientos"]
-    format_excel(ws, nombre_tabla="Reseguimientos")
-    _colorear_encabezados(ws, {COL_ESTADO_APLICACION: "FFD966",
-                               **{v: "F4B183" for v in val.VALIDACIONES}, val.COL_N_CRITERIOS: "F4B183",
-                               val.COL_N_HALLAZGOS: "F4B183"})
+    t = reporte["totales"]
+    titulo = dict(fill=PatternFill("solid", fgColor="1F4E79"), font=Font(bold=True, color="FFFFFF"),
+                  alignment=Alignment(horizontal="center", vertical="top"), border=_BORDE_FINO)
+    ws.append([_celda(ws, "RESEGUIMIENTOS AMGEN — Validación de seguimientos",
+                      font=Font(bold=True, size=14, color="1F4E79"))])
+    ws.append([f"Fecha de corte: {reporte['fecha_corte']:%d/%m/%Y}   |   "
+               f"Casos validados: {t['casos_validados']}   |   "
+               f"Casos con hallazgos: {t['casos_con_hallazgos']}   |   Hallazgos: {t['hallazgos']}"])
+    if not t["con_aplicaciones"]:
+        ws.append([_celda(ws, "No se cargó el archivo de Aplicaciones: la validación 3 no se ejecutó.",
+                          font=Font(italic=True, color="C00000"))])
+    else:
+        ws.append([])
+    ws.append([])
 
-    ws = wb["Hallazgos"]
-    format_excel(ws, header_hex="833C0B", nombre_tabla="Hallazgos")
-    colores = {val.ALTA: "F8CBAD", val.MEDIA: "FFE699", val.BAJA: "DDEBF7"}
-    encabezados = {c.value: c.column_letter for c in ws[1]}
-    if "Severidad" in encabezados:
-        for (cell,) in ws.iter_rows(min_row=2, min_col=ws[encabezados["Severidad"] + "1"].column,
-                                    max_col=ws[encabezados["Severidad"] + "1"].column):
-            if cell.value in colores:
-                cell.fill = PatternFill("solid", fgColor=colores[cell.value])
-    for nombre in ("Hallazgo", "DETALLE"):
-        if nombre in encabezados:
-            ws.column_dimensions[encabezados[nombre]].width = 70
+    fila = 5
+    ws.append([_celda(ws, c, **titulo) for c in reporte["resumen"].columns])
+    for valores in _valores(reporte["resumen"]):
+        ws.append(valores)
+        fila += 1
+    if not por_persona.empty:
+        while fila < fila_persona - 1:
+            ws.append([])
+            fila += 1
+        ws.append([_celda(ws, "Hallazgos por persona que registró la nota", font=Font(bold=True))])
+        ws.append([_celda(ws, c, **titulo) for c in por_persona.columns])
+        for valores in _valores(por_persona):
+            ws.append(valores)
+
+
+def _hoja_tabla(wb, df: pd.DataFrame, hoja: str, color_encabezado: str,
+                colores_encabezado: dict[str, str] | None = None,
+                colores_celda: dict[str, dict[str, str]] | None = None,
+                anchos: dict[str, float] | None = None):
+    """
+    Hoja con los datos como tabla de Excel (filas alternas y filtros),
+    encabezado de color, ancho automático (máx 45) y paneles fijos en B2.
+    """
+    ws = wb.create_sheet(hoja)
+    columnas = [str(c) for c in df.columns]
+    n = len(columnas)
+
+    # En modo solo escritura, anchos, alto y paneles se definen antes de escribir filas
+    muestra = list(_valores(df.head(499)))
+    for j, nombre in enumerate(columnas):
+        max_len = max([len(nombre)] + [len(str(f[j] or "")) for f in muestra])
+        ancho = (anchos or {}).get(nombre, min(max(max_len + 4, 10), 45))
+        ws.column_dimensions[get_column_letter(j + 1)].width = ancho
+    ws.row_dimensions[1] = RowDimension(ws, index=1, ht=32)
+    ws.freeze_panes = "B2"
+
+    alineado = Alignment(horizontal="center", vertical="center", wrap_text=True)
+    encabezado = []
+    for nombre in columnas:
+        color = (colores_encabezado or {}).get(nombre)
+        fill = PatternFill("solid", fgColor=color or color_encabezado)
+        font = Font(bold=True, color="000000" if color else "FFFFFF", size=11, name="Calibri")
+        encabezado.append(_celda(ws, nombre, fill=fill, font=font, alignment=alineado, border=_BORDE_FINO))
+    ws.append(encabezado)
+
+    # Columnas que necesitan formato por celda: fechas y colores por valor
+    fills = {columnas.index(c): {v: PatternFill("solid", fgColor=col) for v, col in m.items()}
+             for c, m in (colores_celda or {}).items() if c in columnas}
+    fechas = [j for j, c in enumerate(df.columns)
+              if pd.api.types.is_datetime64_any_dtype(df[c])
+              or (df[c].dtype == object and df[c].map(lambda v: isinstance(v, date)).any())]
+    for valores in _valores(df):
+        for j in fechas:
+            fmt = _formato_fecha(valores[j])
+            if fmt:
+                valores[j] = _celda(ws, valores[j], number_format=fmt)
+        for j, m in fills.items():
+            if valores[j] in m:
+                valores[j] = _celda(ws, valores[j], fill=m[valores[j]])
+        ws.append(valores)
+
+    if len(df) and n:
+        ref = f"A1:{get_column_letter(n)}{len(df) + 1}"
+        tabla = Table(displayName=hoja, ref=ref, autoFilter=AutoFilter(ref=ref),
+                      tableColumns=[TableColumn(id=i + 1, name=c) for i, c in enumerate(columnas)])
+        tabla.tableStyleInfo = TableStyleInfo(name="TableStyleLight9", showRowStripes=True)
+        with warnings.catch_warnings():
+            # Avisa que hay que declarar las columnas a mano; ya están declaradas arriba
+            warnings.simplefilter("ignore", UserWarning)
+            ws.add_table(tabla)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

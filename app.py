@@ -35,6 +35,18 @@ MANUAL = Path(__file__).parent / "Manual_de_usuario_Reseguimientos.pdf"
 COLOR_SEVERIDAD = {val.ALTA: "#f8cbad", val.MEDIA: "#ffe699", val.BAJA: "#ddebf7"}  # celdas
 COLOR_GRAFICO   = {val.ALTA: "#d9603b", val.MEDIA: "#e3b23c", val.BAJA: "#6b9bd1"}  # barras
 
+# Filas máximas por tabla en pantalla. Con archivos grandes las tablas completas pesan
+# cientos de MB y la página deja de responder; el Excel y el CSV siempre van completos.
+MAX_FILAS_PANTALLA = 20_000
+
+
+def limitar_filas(df: pd.DataFrame) -> pd.DataFrame:
+    if len(df) > MAX_FILAS_PANTALLA:
+        st.caption(f"Se muestran las primeras {MAX_FILAS_PANTALLA:,} de {len(df):,} filas. "
+                   "Usa los filtros o descarga el Excel para ver todo.".replace(",", "."))
+        return df.head(MAX_FILAS_PANTALLA)
+    return df
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  PARÁMETROS (barra lateral)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -223,7 +235,7 @@ with tab_res:
                        .groupby(["Validación", "Severidad", "Tipo"]).size()
                        .rename("Cantidad").reset_index()
                        .sort_values("Cantidad", ascending=False))
-        st.dataframe(tipos_h, hide_index=True, width="stretch")
+        st.dataframe(limitar_filas(tipos_h), hide_index=True, width="stretch")
 
 with tab_hall:
     if df_h.empty:
@@ -247,9 +259,10 @@ with tab_hall:
                           | vista["DETALLE"].fillna("").str.contains(patron, case=False, regex=False)]
 
         st.caption(f"{len(vista):,} hallazgos".replace(",", "."))
+        en_pantalla = limitar_filas(vista)
         st.dataframe(
-            vista.style.map(lambda s: f"background-color: {COLOR_SEVERIDAD.get(s, '')}; color: #1B2430",
-                            subset=["Severidad"]) if len(vista) <= 20000 else vista,
+            en_pantalla.style.map(lambda s: f"background-color: {COLOR_SEVERIDAD.get(s, '')}; color: #1B2430",
+                                  subset=["Severidad"]),
             hide_index=True, width="stretch", height=520,
             column_config={
                 "Fecha llamada": st.column_config.DatetimeColumn(format="DD/MM/YYYY HH:mm"),
@@ -275,4 +288,4 @@ with tab_cons:
     if solo_err:
         df_c = df_c[df_c[val.COL_N_HALLAZGOS].fillna(0) > 0]
     st.caption(f"{len(df_c):,} pacientes".replace(",", "."))
-    st.dataframe(df_c, hide_index=True, width="stretch", height=520)
+    st.dataframe(limitar_filas(df_c), hide_index=True, width="stretch", height=520)
