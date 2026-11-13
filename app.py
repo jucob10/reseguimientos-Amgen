@@ -124,6 +124,57 @@ with st.expander("¿Qué se valida?", expanded=False):
    especialidad/médico y la fecha de la cita (o el motivo por el que aún no está agendada).
 """)
 
+# Debe coincidir con las reglas de scripts/validaciones.py
+with st.expander("¿Cómo se asigna la severidad?", expanded=False):
+    st.markdown("""
+Cada tipo de error tiene una severidad fija:
+
+- 🔴 **Alta** — el seguimiento está mal o falta un dato clave. Hay que corregirlo.
+- 🟡 **Media** — la nota es confusa, contradictoria o incompleta.
+- 🔵 **Baja** — la información está, pero en otro campo o incompleta. Solo hay que revisarla.
+
+**1. Nota vs Razón del estado**
+
+| Severidad | Cuándo |
+|---|---|
+| 🔴 Alta | El seguimiento no tiene nota |
+| 🔴 Alta | La *Razón del estado* no coincide con el estado de la nota |
+| 🟡 Media | La nota no registra un estado reconocible |
+| 🟡 Media | El campo de estado y el detalle se contradicen |
+| 🟡 Media | El paciente no tiene *Razón del estado* |
+| 🟡 Media | Interacción exitosa con nota *No contactable*, o sin contacto con otro estado |
+| 🔵 Baja | La nota registra una inactivación con otra razón (verificar la razón) |
+
+**2. Fecha de la llamada vs fecha programada**
+
+| Severidad | Cuándo |
+|---|---|
+| 🔴 Alta | Llamada **después** de la fecha programada (más allá de la tolerancia) |
+| 🔴 Alta | La nota no registra *Fecha de próximo contacto* |
+| 🔴 Alta | La *Fecha de próximo contacto* es anterior a la llamada |
+| 🔴 Alta | Seguimiento vencido: paciente activo sin llamada después de la fecha programada |
+| 🟡 Media | Llamada **antes** de la fecha programada |
+
+**3. Aplicación registrada**
+
+| Severidad | Cuándo |
+|---|---|
+| 🔴 Alta | La aplicación de la nota no está en *Aplicaciones* o figura como NO aplicada |
+| 🔴 Alta | La *Fecha de última aplicación* es posterior a la llamada |
+| 🔵 Baja | La aplicación sí está registrada, pero la nota no diligencia *Fecha de última aplicación* |
+
+**4. Información de cita**
+
+| Severidad | Cuándo |
+|---|---|
+| 🔴 Alta | Dice que la cita está agendada pero no da la fecha |
+| 🔴 Alta | No documenta el estado de la cita (ni fecha ni motivo) |
+| 🟡 Media | No indica la especialidad o el médico (o deja la plantilla *ESPECIALIDAD* sin llenar) |
+| 🔵 Baja | Solo indica el mes de la cita, no el día |
+| 🔵 Baja | La fecha está en el detalle pero no en *Fecha de control con especialista* |
+| 🔵 Baja | La fecha de control ya pasó: validar el resultado de la cita |
+""")
+
 c1, c2, c3 = st.columns(3)
 tipos = ["xlsx", "xls", "csv"]
 with c1:
